@@ -200,4 +200,61 @@ describe('Board', () => {
       });
     });
   });
+
+  describe('when verifying mills', () => {
+    describe('show return mills', () => {
+      test('when there is a horizontal line with three pieces of the same color', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(16, PositionStatus.BLACK);
+        sut.add(15, PositionStatus.BLACK);
+
+        expect(sut.hasMill(10)).toBe(true);
+        expect(sut.hasMill(16)).toBe(true);
+        expect(sut.hasMill(15)).toBe(true);
+      });
+
+      test('when there is a vertical line with three pieces of the same color', () => {
+        const { sut } = makeSut();
+        sut.add(3, PositionStatus.BLACK);
+        sut.add(5, PositionStatus.BLACK);
+        sut.add(8, PositionStatus.BLACK);
+
+        expect(sut.hasMill(3)).toBe(true);
+        expect(sut.hasMill(5)).toBe(true);
+        expect(sut.hasMill(8)).toBe(true);
+      });
+    });
+
+    describe('should not return mills', () => {
+      test('when target piece is vacant', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(16, PositionStatus.BLACK);
+
+        expect(() => sut.hasMill(15)).toThrow(
+          new EmptyPositionError(15, 'cannot verify mill'),
+        );
+      });
+
+      test('when there is only two pieces with same color', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(16, PositionStatus.BLACK);
+
+        expect(sut.hasMill(10)).toBe(false);
+        expect(sut.hasMill(16)).toBe(false);
+      });
+      test('when there is a line with piece with different colors', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(16, PositionStatus.BLACK);
+        sut.add(15, PositionStatus.WHITE);
+
+        expect(sut.hasMill(10)).toBe(false);
+        expect(sut.hasMill(16)).toBe(false);
+        expect(sut.hasMill(15)).toBe(false);
+      });
+    });
+  });
 });

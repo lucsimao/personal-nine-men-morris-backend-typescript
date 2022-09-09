@@ -7,6 +7,27 @@ import {
 } from '../errors';
 import { BoardPosition } from '../interfaces/BoardPosition';
 
+export const getValidAdjacent = () => [
+  ...[
+    [17, 24, 22],
+    [11, 12, 13],
+    [1, 2, 3],
+    [6, 7, 8],
+    [10, 16, 15],
+    [19, 20, 21],
+    [17, 18, 19],
+    [11, 9, 10],
+    [1, 4, 6],
+    [24, 12, 2],
+    [7, 16, 20],
+    [3, 5, 8],
+    [13, 14, 15],
+    [22, 23, 21],
+    [18, 9, 4],
+    [5, 14, 23],
+  ],
+];
+
 export const getDefaultPositions = () => [
   ...[
     { id: 1, adjacentPositionId: [2, 4], status: PositionStatus.VOID },
@@ -127,6 +148,35 @@ export class Board {
 
     this.add(targetPosition, status);
     this.remove(originPosition, PositionStatus.VOID);
+  }
+
+  public hasMill(position: number) {
+    const verifyMillForCombination = (combination: number[]) => {
+      for (const id of combination) {
+        const idStatus = this.getStatusInPosition(id);
+        const status = this.getStatusInPosition(position);
+        if (idStatus !== status) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    if (this.isPositionFree(position)) {
+      throw new EmptyPositionError(position, 'cannot verify mill');
+    }
+
+    const validCombination = getValidAdjacent().filter(combination =>
+      combination.includes(position),
+    );
+
+    for (const combination of validCombination) {
+      if (verifyMillForCombination(combination)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private getAdjacentPositions(position: number) {
