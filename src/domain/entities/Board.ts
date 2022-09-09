@@ -1,5 +1,10 @@
 import { PositionStatus } from '../enum/PositionStatus';
-import { OutOfRangeError, TakenPositionError } from '../errors';
+import {
+  EmptyPositionError,
+  InvalidPositionError,
+  OutOfRangeError,
+  TakenPositionError,
+} from '../errors';
 import { BoardPosition } from '../interfaces/BoardPosition';
 
 export const getDefaultPositions = () => [
@@ -71,6 +76,22 @@ export class Board {
 
   private isPositionInBoardRange(position: number): boolean {
     return position >= 1 && position <= this.positions.length;
+  }
+
+  remove(position: number, status: PositionStatus) {
+    if (!this.isPositionInBoardRange(position)) {
+      throw new OutOfRangeError(position, 'cannot remove piece');
+    }
+    if (this.getStatusInPosition(position) === status) {
+      throw new InvalidPositionError(
+        position,
+        'cannot remove piece with same player status',
+      );
+    }
+    if (this.isPositionFree(position)) {
+      throw new EmptyPositionError(position, 'cannot remove piece');
+    }
+    this.positions[position - 1].status = PositionStatus.VOID;
   }
 
   public getStatusInPosition(position: number): PositionStatus {
