@@ -116,4 +116,88 @@ describe('Board', () => {
       });
     });
   });
+
+  describe('when move piece', () => {
+    describe('should remove the origin position and add target position', () => {
+      test('when receive valid origin and target position', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+
+        sut.move(10, 9, PositionStatus.BLACK);
+
+        expect(sut.getStatusInPosition(10)).toBe(PositionStatus.VOID);
+        expect(sut.getStatusInPosition(9)).toBe(PositionStatus.BLACK);
+      });
+    });
+
+    describe('should not move piece', () => {
+      test('when origin piece status is different from player status', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+
+        expect(() => {
+          sut.move(10, 12, PositionStatus.WHITE);
+        }).toThrow(
+          new InvalidPositionError(
+            12,
+            'cannot move piece with status different from player status',
+          ),
+        );
+      });
+
+      test('when target position is not adjacent to origin position', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+
+        expect(() => {
+          sut.move(10, 12, PositionStatus.BLACK);
+        }).toThrow(
+          new InvalidPositionError(
+            12,
+            'cannot move piece to a non adjacent position',
+          ),
+        );
+      });
+
+      test('when origin position is empty', () => {
+        const { sut } = makeSut();
+
+        expect(() => {
+          sut.move(10, 9, PositionStatus.WHITE);
+        }).toThrow(new EmptyPositionError(10, 'cannot move piece'));
+      });
+
+      test('quando a posição final estiver ocupada', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(9, PositionStatus.BLACK);
+
+        expect(() => {
+          sut.move(10, 9, PositionStatus.BLACK);
+        }).toThrow(new EmptyPositionError(9, 'cannot move piece'));
+      });
+
+      test('when origin position is out of board range', () => {
+        const { sut } = makeSut();
+
+        expect(() => {
+          sut.move(0, 9, PositionStatus.WHITE);
+        }).toThrow(new OutOfRangeError(0, 'cannot move piece'));
+        expect(() => {
+          sut.move(25, 9, PositionStatus.WHITE);
+        }).toThrow(new OutOfRangeError(25, 'cannot move piece'));
+      });
+
+      test('when targe position is out of board range', () => {
+        const { sut } = makeSut();
+
+        expect(() => {
+          sut.move(10, 0, PositionStatus.WHITE);
+        }).toThrow(new OutOfRangeError(0, 'cannot move piece'));
+        expect(() => {
+          sut.move(10, 25, PositionStatus.WHITE);
+        }).toThrow(new OutOfRangeError(25, 'cannot move piece'));
+      });
+    });
+  });
 });

@@ -94,6 +94,45 @@ export class Board {
     this.positions[position - 1].status = PositionStatus.VOID;
   }
 
+  public move(
+    originPosition: number,
+    targetPosition: number,
+    status: PositionStatus,
+  ) {
+    if (!this.isPositionInBoardRange(originPosition)) {
+      throw new OutOfRangeError(originPosition, 'cannot move piece');
+    }
+    if (!this.isPositionInBoardRange(targetPosition)) {
+      throw new OutOfRangeError(targetPosition, 'cannot move piece');
+    }
+    if (this.isPositionFree(originPosition)) {
+      throw new EmptyPositionError(originPosition, 'cannot move piece');
+    }
+    if (!this.isPositionFree(targetPosition)) {
+      throw new EmptyPositionError(targetPosition, 'cannot move piece');
+    }
+    if (this.getStatusInPosition(originPosition) !== status) {
+      throw new InvalidPositionError(
+        targetPosition,
+        'cannot move piece with status different from player status',
+      );
+    }
+    const adjacentPositions = this.getAdjacentPositions(originPosition);
+    if (!adjacentPositions.includes(targetPosition)) {
+      throw new InvalidPositionError(
+        targetPosition,
+        'cannot move piece to a non adjacent position',
+      );
+    }
+
+    this.add(targetPosition, status);
+    this.remove(originPosition, PositionStatus.VOID);
+  }
+
+  private getAdjacentPositions(position: number) {
+    return this.positions[position - 1].adjacentPositionId;
+  }
+
   public getStatusInPosition(position: number): PositionStatus {
     return this.positions[position - 1].status;
   }
