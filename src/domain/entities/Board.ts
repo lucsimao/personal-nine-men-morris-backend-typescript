@@ -1,4 +1,5 @@
 import { PositionStatus } from '../enum/PositionStatus';
+import { OutOfRangeError, TakenPositionError } from '../errors';
 import { BoardPosition } from '../interfaces/BoardPosition';
 
 export const getDefaultPositions = () => [
@@ -47,5 +48,32 @@ export class Board {
 
   constructor() {
     this.positions = getDefaultPositions();
+  }
+
+  public getPositions() {
+    return [...this.positions];
+  }
+
+  public add(position: number, status: PositionStatus): void {
+    if (!this.isPositionInBoardRange(position)) {
+      throw new OutOfRangeError(position, 'cannot add piece');
+    }
+    if (!this.isPositionFree(position)) {
+      throw new TakenPositionError(position, 'cannot add piece');
+    }
+
+    this.positions[position - 1].status = status;
+  }
+
+  private isPositionFree(position: number): boolean {
+    return this.getStatusInPosition(position) === PositionStatus.VOID;
+  }
+
+  private isPositionInBoardRange(position: number): boolean {
+    return position >= 1 && position <= this.positions.length;
+  }
+
+  public getStatusInPosition(position: number): PositionStatus {
+    return this.positions[position - 1].status;
   }
 }
