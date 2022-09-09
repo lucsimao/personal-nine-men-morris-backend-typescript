@@ -257,4 +257,61 @@ describe('Board', () => {
       });
     });
   });
+
+  describe('when returning available neighbors', () => {
+    describe('when piece is valid', () => {
+      test('should return all of available neighbors', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+
+        const result = sut.getAvailableNeighbors(10);
+
+        expect(result).toEqual([9, 16]);
+      });
+
+      test('should not return taken neighbors', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(16, PositionStatus.BLACK);
+
+        const result = sut.getAvailableNeighbors(10);
+
+        expect(result).toEqual([9]);
+      });
+
+      test('deve retornar vazio caso todos os vizinhos estejam ocupados', () => {
+        const { sut } = makeSut();
+        sut.add(10, PositionStatus.BLACK);
+        sut.add(16, PositionStatus.BLACK);
+        sut.add(9, PositionStatus.WHITE);
+
+        const result = sut.getAvailableNeighbors(10);
+
+        expect(result).toEqual([]);
+      });
+    });
+
+    describe('should not return available neighbors', () => {
+      test('when position is out of board range', () => {
+        const { sut } = makeSut();
+
+        expect(() => {
+          sut.getAvailableNeighbors(0);
+        }).toThrow(new OutOfRangeError(0, 'cannot get available neighbors'));
+        expect(() => {
+          sut.getAvailableNeighbors(25);
+        }).toThrow(new OutOfRangeError(25, 'cannot get available neighbors'));
+      });
+
+      test('when piece is vacants', () => {
+        const { sut } = makeSut();
+
+        expect(() => {
+          sut.getAvailableNeighbors(10);
+        }).toThrow(
+          new EmptyPositionError(10, 'cannot get available neighbors'),
+        );
+      });
+    });
+  });
 });

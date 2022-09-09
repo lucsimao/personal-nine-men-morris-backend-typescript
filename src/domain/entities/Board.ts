@@ -7,7 +7,7 @@ import {
 } from '../errors';
 import { BoardPosition } from '../interfaces/BoardPosition';
 
-export const getValidAdjacent = () => [
+const getValidAdjacent = () => [
   ...[
     [17, 24, 22],
     [11, 12, 13],
@@ -177,6 +177,21 @@ export class Board {
     }
 
     return false;
+  }
+
+  public getAvailableNeighbors(position: number) {
+    if (!this.isPositionInBoardRange(position)) {
+      throw new OutOfRangeError(position, 'cannot get available neighbors');
+    }
+    if (this.isPositionFree(position)) {
+      throw new EmptyPositionError(position, 'cannot get available neighbors');
+    }
+    const pieceNeighbors = this.getAdjacentPositions(position);
+    const result = pieceNeighbors.filter(neighbor =>
+      this.isPositionFree(neighbor),
+    );
+
+    return result;
   }
 
   private getAdjacentPositions(position: number) {
