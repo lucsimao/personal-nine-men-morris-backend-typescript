@@ -11,7 +11,7 @@ export class Player {
     private readonly _id: string,
     private readonly _name: string,
     private readonly _color: PositionStatus,
-    startPieces: number,
+    startPieces = 9,
   ) {
     if (startPieces < 3) {
       throw new InvalidStartPiecesError(startPieces);
