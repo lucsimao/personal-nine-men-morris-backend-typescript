@@ -1,9 +1,10 @@
+import { State } from '../enum/State';
 import { GameInfo } from './GameInfo';
 
 export abstract class GameState<T = unknown> {
   constructor(
-    protected readonly gameInfo: GameInfo,
-    private readonly _name: string,
+    private readonly _gameInfo: GameInfo,
+    private readonly _name: State,
   ) {}
 
   public abstract exec(_interaction: () => T): Promise<GameState<unknown>>;
@@ -18,5 +19,9 @@ export abstract class GameState<T = unknown> {
 
   get board() {
     return this.gameInfo.board;
+  }
+
+  get gameInfo() {
+    return this._gameInfo;
   }
 }

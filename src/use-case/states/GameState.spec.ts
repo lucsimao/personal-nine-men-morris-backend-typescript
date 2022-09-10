@@ -8,6 +8,7 @@ import {
 import { Board } from '../../domain/entities/Board';
 import { Player } from '../../domain/entities/Player';
 import { PositionStatus } from '../../domain/enum/PositionStatus';
+import { State } from './enum/State';
 import { PlayerTurnStart } from './PlayerTurnStart';
 
 const makeSut = () => {
@@ -73,7 +74,12 @@ describe('GameState', () => {
     const playerTurn = await sut.exec(() => ({}));
     let state = playerTurn;
 
+    expect(state.player).toEqual(player1);
+    expect(state.board).toEqual(board);
+    expect(state.gameInfo).toEqual({ board, player: player1, foe: player2 });
+
     expect(playerTurn).toBeInstanceOf(PlayerTurnStart);
+
     await addPiecePlayer(1, player1);
     await addPiecePlayer(2, player2);
     await addPiecePlayer(4, player1);
@@ -126,5 +132,8 @@ describe('GameState', () => {
     expect(state).toBeInstanceOf(PlayerRemoveFoePieceState);
     await removePiecePlayer(24);
     expect(state).toBeInstanceOf(GameOverState);
+
+    expect(state.name).toBe(State.GAME_OVER);
+    await state.exec(() => ({}));
   });
 });

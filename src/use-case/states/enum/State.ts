@@ -1,5 +1,6 @@
 export enum State {
   START_GAME = 'start-game',
+  UPDATE_BOARD = 'update-board',
   PLAYER_TURN_START = 'player-start-turn',
   PLAYER_ADD_PIECE = 'player-add-piece',
   PLAYER_MOVE_PIECE = 'player-move-piece',
