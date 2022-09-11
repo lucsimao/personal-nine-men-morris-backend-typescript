@@ -30,20 +30,20 @@ export class PlayerInputData implements PlayerInputRepository {
 
   public async updateBoard(state: GameState<unknown>): Promise<void> {
     await this.playerInputClient.sendEventToAllPlayers(
-      'update-board',
+      { name: 'update-board' } as unknown as GameState,
       state.gameInfo,
     );
   }
 
   public async getStartGame(state: GameState<unknown>): Promise<void> {
-    await this.playerInputClient.sendEventToAllPlayers(state.name, START_GAME);
+    await this.playerInputClient.sendEventToAllPlayers(state, START_GAME);
   }
 
   public async getPlayerTurnStart(state: GameState<unknown>): Promise<void> {
     const playerName = state.gameInfo.player.name;
 
     await this.playerInputClient.sendEventToAllPlayers(
-      state.name,
+      state,
       PLAYER_TURN(playerName),
     );
   }
@@ -54,10 +54,10 @@ export class PlayerInputData implements PlayerInputRepository {
     const playerName = state.gameInfo.player.name;
 
     await this.playerInputClient.sendEventToPlayer(
-      state.name,
+      state,
       CHOOSE_PIECE(playerName),
     );
-    const { position } = await this.playerInputClient.getInput(state.name);
+    const { position } = await this.playerInputClient.getInput(state);
 
     return { position };
   }
@@ -68,19 +68,16 @@ export class PlayerInputData implements PlayerInputRepository {
     const playerName = state.gameInfo.player.name;
 
     await this.playerInputClient.sendEventToPlayer(
-      state.name,
+      state,
       CHOOSE_PIECE_TO_MOVE(playerName),
     );
-    const { position } = await this.playerInputClient.getInput(state.name);
+    const { position } = await this.playerInputClient.getInput(state);
 
     const availablePositions =
       state.gameInfo.board.getAvailableNeighbors(position);
-    await this.playerInputClient.sendEventToPlayer(
-      state.name,
-      availablePositions,
-    );
+    await this.playerInputClient.sendEventToPlayer(state, availablePositions);
     const { position: targetPosition } = await this.playerInputClient.getInput(
-      state.name,
+      state,
     );
 
     return { position, targetPosition };
@@ -92,10 +89,10 @@ export class PlayerInputData implements PlayerInputRepository {
     const playerName = state.gameInfo.player.name;
 
     await this.playerInputClient.sendEventToPlayer(
-      state.name,
+      state,
       CHOOSE_PIECE_TO_REMOVE(playerName),
     );
-    const { position } = await this.playerInputClient.getInput(state.name);
+    const { position } = await this.playerInputClient.getInput(state);
 
     return { position };
   }
@@ -103,12 +100,9 @@ export class PlayerInputData implements PlayerInputRepository {
   public async getGameOver(state: GameState<unknown>): Promise<void> {
     const playerName = state.gameInfo.player.name;
 
-    await this.playerInputClient.sendEventToAllPlayers(
-      state.name,
-      state.gameInfo,
-    );
+    await this.playerInputClient.sendEventToAllPlayers(state, state.gameInfo);
     await this.playerInputClient.sendEventToPlayer(
-      state.name,
+      state,
       GAME_OVER(playerName),
     );
   }
