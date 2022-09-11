@@ -1,5 +1,4 @@
 import { State } from './enum/State';
-import { PlayerTurnStart } from './index';
 import { GameInfo, GameState } from './protocols';
 
 export class GameOverState extends GameState<void> {
@@ -7,9 +6,9 @@ export class GameOverState extends GameState<void> {
     super(gameInfoInfo, State.GAME_OVER);
   }
 
-  public async exec(interaction: () => void): Promise<GameState> {
+  public async exec(interaction: () => void): Promise<GameState | null> {
     await interaction();
 
-    return new PlayerTurnStart(this.gameInfo);
+    return null;
   }
 }

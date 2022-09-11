@@ -1,5 +1,5 @@
 import { State } from './enum/State';
-import { PlayerRemoveFoePieceState, PlayerTurnStart } from './index';
+import { PlayerRemoveFoePieceState, PlayerTurnStartState } from './index';
 import { GameInfo, GameState, MovementInteractionResult } from './protocols';
 
 export class PlayerMovePieceState extends GameState<MovementInteractionResult> {
@@ -21,7 +21,7 @@ export class PlayerMovePieceState extends GameState<MovementInteractionResult> {
     if (this.gameInfo.board.hasMill(targetPosition)) {
       return new PlayerRemoveFoePieceState(this.gameInfo);
     }
-    return new PlayerTurnStart({
+    return new PlayerTurnStartState({
       ...this.gameInfo,
       player: this.gameInfo.foe,
       foe: this.gameInfo.player,

@@ -7,18 +7,12 @@ export abstract class GameState<T = unknown> {
     private readonly _name: State,
   ) {}
 
-  public abstract exec(_interaction: () => T): Promise<GameState<unknown>>;
-
-  get player() {
-    return this.gameInfo.player;
-  }
+  public abstract exec(
+    _interaction: () => T,
+  ): Promise<GameState<unknown> | null>;
 
   get name() {
     return this._name;
-  }
-
-  get board() {
-    return this.gameInfo.board;
   }
 
   get gameInfo() {

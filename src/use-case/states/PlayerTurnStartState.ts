@@ -2,7 +2,7 @@ import { State } from './enum/State';
 import { PlayerMovePieceState, PlayerAddPieceState } from './index';
 import { GameInfo, GameState } from './protocols';
 
-export class PlayerTurnStart extends GameState<void> {
+export class PlayerTurnStartState extends GameState<void> {
   constructor(gameInfoInfo: GameInfo) {
     super(gameInfoInfo, State.PLAYER_TURN_START);
   }
