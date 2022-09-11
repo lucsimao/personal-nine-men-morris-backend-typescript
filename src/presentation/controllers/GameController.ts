@@ -2,6 +2,7 @@ import { Board } from '../../domain/entities/Board';
 import { Player } from '../../domain/entities/Player';
 import { PositionStatus } from '../../domain/enum/PositionStatus';
 import { InvalidInteractionError } from '../../domain/errors/InvalidInteractionError';
+import { Logger } from '../../main/infra/protocols/Logger';
 import { StartGameState } from '../../use-case/states';
 import { State } from '../../use-case/states/enum/State';
 import { GameState } from '../../use-case/states/protocols';
@@ -47,7 +48,10 @@ const getValidInteraction = (
 };
 
 export class GameController {
-  constructor(private readonly playerInputRepository: PlayerInputRepository) {}
+  constructor(
+    private readonly playerInputRepository: PlayerInputRepository,
+    private readonly logger: Logger,
+  ) {}
 
   public async start(): Promise<void> {
     const { player, foe } = await this.setupPlayer();
@@ -60,6 +64,11 @@ export class GameController {
     });
     while (state) {
       try {
+        this.logger.info({
+          msg: `starting game`,
+          state: state.name,
+          board: state.gameInfo,
+        });
         const interaction = getValidInteraction(
           state,
           this.playerInputRepository,
@@ -71,13 +80,32 @@ export class GameController {
         if (!(error instanceof InvalidInteractionError)) {
           throw error;
         }
+        this.logger.warning({
+          msg: `invalid command`,
+          error: error,
+          message: error.message,
+        });
       }
     }
   }
 
   private async setupPlayer(): Promise<{ player: Player; foe: Player }> {
+    this.logger.info({
+      msg: `waiting for player 1 connection`,
+    });
     const player1 = await this.playerInputRepository.getPlayer();
+    this.logger.info({
+      msg: `player1 connected`,
+      playerName: player1.name,
+    });
+    this.logger.info({
+      msg: `waiting for player 2 connection`,
+    });
     const player2 = await this.playerInputRepository.getPlayer();
+    this.logger.info({
+      msg: `player2 connected`,
+      playerName: player2.name,
+    });
 
     const player = new Player(player1.id, player1.name, PositionStatus.BLACK);
     const foe = new Player(player2.id, player2.name, PositionStatus.WHITE);

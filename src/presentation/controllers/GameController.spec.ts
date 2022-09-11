@@ -1,6 +1,13 @@
+import { Logger } from '../../main/infra/protocols/Logger';
 import { GameState } from '../../use-case/states/protocols';
 import { PlayerInputRepository } from '../protocols/PlayerInputRepository';
 import { GameController } from './GameController';
+
+const makeLogger = (): jest.Mocked<Logger> => ({
+  info: jest.fn(),
+  warning: jest.fn(),
+  error: jest.fn(),
+});
 
 const makePlayerInputRepository = (): jest.Mocked<PlayerInputRepository> => ({
   getGameOver: jest.fn(),
@@ -15,7 +22,8 @@ const makePlayerInputRepository = (): jest.Mocked<PlayerInputRepository> => ({
 
 const makeSut = () => {
   const playerInputRepository = makePlayerInputRepository();
-  const sut = new GameController(playerInputRepository);
+  const logger = makeLogger();
+  const sut = new GameController(playerInputRepository, logger);
 
   return { sut, playerInputRepository };
 };
