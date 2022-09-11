@@ -1,7 +1,6 @@
 import { Server } from 'socket.io';
 
-import { SocketInputAdapter } from '../adapters/SocketInputAdapter';
-import { SocketServerData } from '../adapters/SocketServerData';
+import { SocketInputAdapter, SocketServerData } from '../adapters/';
 
 export const makeInputClient = (server: Server) => {
   const socketServer = new SocketServerData(server);

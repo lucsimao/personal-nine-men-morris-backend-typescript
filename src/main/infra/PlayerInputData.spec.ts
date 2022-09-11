@@ -9,9 +9,9 @@ import {
   PlayerTurnStartState,
   StartGameState,
 } from '../../use-case/states';
-import { State } from '../../use-case/states/enum/State';
 import { Message } from '../config/Message';
 import { PlayerInputData } from './PlayerInputData';
+import { Logger } from './protocols/Logger';
 import { PlayerInputClient } from './protocols/PlayerInputClient';
 
 const makeGameInfo = () => {
@@ -23,6 +23,12 @@ const makeGameInfo = () => {
   return { board, player, foe };
 };
 
+const makeLogger = (): jest.Mocked<Logger> => ({
+  info: jest.fn(),
+  warning: jest.fn(),
+  error: jest.fn(),
+});
+
 const makePlayerInputClient = (): jest.Mocked<PlayerInputClient> => ({
   getInput: jest.fn().mockResolvedValue({ position: 20 }),
   getPlayer: jest.fn().mockResolvedValue('player name'),
@@ -32,7 +38,8 @@ const makePlayerInputClient = (): jest.Mocked<PlayerInputClient> => ({
 
 const makeSut = () => {
   const playerInputClient = makePlayerInputClient();
-  const sut = new PlayerInputData(playerInputClient);
+  const logger = makeLogger();
+  const sut = new PlayerInputData(playerInputClient, logger);
 
   return { sut, playerInputClient };
 };
@@ -79,7 +86,7 @@ describe('Player Data', () => {
       await sut.updateBoard(state);
 
       expect(playerInputClient.sendEventToAllPlayers).toBeCalledWith(
-        'update-board',
+        { name: 'update-board' },
         state.gameInfo,
       );
     });
@@ -107,7 +114,7 @@ describe('Player Data', () => {
       await sut.getPlayerTurnStart(state);
 
       expect(playerInputClient.sendEventToAllPlayers).toBeCalledWith(
-        State.PLAYER_TURN_START,
+        state,
         Message.PLAYER_TURN(state.gameInfo.player.name),
       );
     });
@@ -134,7 +141,7 @@ describe('Player Data', () => {
       await sut.getStartGame(state);
 
       expect(playerInputClient.sendEventToAllPlayers).toBeCalledWith(
-        State.START_GAME,
+        state,
         Message.START_GAME,
       );
     });
@@ -161,7 +168,7 @@ describe('Player Data', () => {
       await sut.getPlayerAddPiece(state);
 
       expect(playerInputClient.sendEventToPlayer).toBeCalledWith(
-        State.PLAYER_ADD_PIECE,
+        state,
         Message.CHOOSE_PIECE(state.gameInfo.player.name),
       );
     });
@@ -171,7 +178,7 @@ describe('Player Data', () => {
 
       await sut.getPlayerAddPiece(state);
 
-      expect(playerInputClient.getInput).toBeCalledWith(State.PLAYER_ADD_PIECE);
+      expect(playerInputClient.getInput).toBeCalledWith(state);
     });
     describe('should add piece', () => {
       test('when fetch with success', async () => {
@@ -215,7 +222,7 @@ describe('Player Data', () => {
       await sut.getPlayerMovePiece(state);
 
       expect(playerInputClient.sendEventToPlayer).toBeCalledWith(
-        State.PLAYER_MOVE_PIECE,
+        state,
         Message.CHOOSE_PIECE_TO_MOVE(state.gameInfo.player.name),
       );
     });
@@ -225,9 +232,7 @@ describe('Player Data', () => {
 
       await sut.getPlayerMovePiece(state);
 
-      expect(playerInputClient.getInput).toBeCalledWith(
-        State.PLAYER_MOVE_PIECE,
-      );
+      expect(playerInputClient.getInput).toBeCalledWith(state);
       expect(playerInputClient.getInput).toBeCalledTimes(2);
     });
     describe('should move piece', () => {
@@ -276,7 +281,7 @@ describe('Player Data', () => {
       await sut.getPlayerRemoveFoePiece(state);
 
       expect(playerInputClient.sendEventToPlayer).toBeCalledWith(
-        State.PLAYER_REMOVE_FOE_PIECE,
+        state,
         Message.CHOOSE_PIECE_TO_REMOVE(state.gameInfo.player.name),
       );
     });
@@ -286,9 +291,7 @@ describe('Player Data', () => {
 
       await sut.getPlayerRemoveFoePiece(state);
 
-      expect(playerInputClient.getInput).toBeCalledWith(
-        State.PLAYER_REMOVE_FOE_PIECE,
-      );
+      expect(playerInputClient.getInput).toBeCalledWith(state);
     });
     describe('should remove piece', () => {
       test('when fetch with success', async () => {
@@ -333,11 +336,11 @@ describe('Player Data', () => {
       await sut.getGameOver(state);
 
       expect(playerInputClient.sendEventToPlayer).toBeCalledWith(
-        State.GAME_OVER,
+        state,
         Message.GAME_OVER(state.gameInfo.player.name),
       );
       expect(playerInputClient.sendEventToAllPlayers).toBeCalledWith(
-        State.GAME_OVER,
+        state,
         state.gameInfo,
       );
     });

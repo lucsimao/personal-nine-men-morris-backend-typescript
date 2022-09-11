@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 
+import { Logger } from './main/adapters';
 import { makeGame } from './main/factories/GameController';
 
 const app = express();
@@ -12,16 +13,22 @@ const PORT = 3000;
 app.use(express.static('public'));
 
 //localhost:3000
-(async () => {
-  server.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-  });
+void (async () => {
+  try {
+    await new Promise<void>(resolve =>
+      server.listen(PORT, () => {
+        Logger.info({ msg: `Server listening on port ${PORT}` });
+        resolve();
+      }),
+    );
 
-  socketServer.on('chat', mensagem => {
-    console.log('Recebendo mensagem', mensagem);
-  });
+    const game = makeGame(socketServer);
 
-  const game = makeGame(socketServer);
-
-  await game.start();
+    await game.start();
+  } catch (error) {
+    Logger.error({
+      msg: 'An error ocurred and closed the app',
+      error: error,
+    });
+  }
 })();
