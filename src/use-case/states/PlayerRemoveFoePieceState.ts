@@ -1,5 +1,5 @@
 import { State } from './enum/State';
-import { GameOverState, PlayerTurnStart } from './index';
+import { GameOverState, PlayerTurnStartState } from './index';
 import { AddInteractionResult, GameInfo, GameState } from './protocols';
 
 export class PlayerRemoveFoePieceState extends GameState<AddInteractionResult> {
@@ -19,7 +19,7 @@ export class PlayerRemoveFoePieceState extends GameState<AddInteractionResult> {
     if (IsGameOver) {
       return new GameOverState(this.gameInfo);
     }
-    return new PlayerTurnStart({
+    return new PlayerTurnStartState({
       ...this.gameInfo,
       player: this.gameInfo.foe,
       foe: this.gameInfo.player,
