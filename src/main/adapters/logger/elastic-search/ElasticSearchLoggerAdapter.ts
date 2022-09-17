@@ -1,5 +1,5 @@
 import { Logger, LoggerParams } from '../../../infra/protocols/Logger';
-import ElasticSearchService from './ElasticSearchService';
+import { ElasticSearchService } from './ElasticSearchService';
 
 export class ElasticSearchLoggerAdapter implements Logger {
   info(message: LoggerParams): void {

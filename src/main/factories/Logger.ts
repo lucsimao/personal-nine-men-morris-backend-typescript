@@ -1,6 +1,4 @@
-// import { ElasticSearchLoggerAdapter } from '../adapters/logger/elastic-search/ElasticSearchLoggerAdapter';
-import { ElasticSearchLoggerAdapter } from '../adapters/logger/elastic-search/ElasticSearchLoggerAdapter';
-import { PinoAdapter } from '../adapters/LoggerAdapter';
+import { ElasticSearchLoggerAdapter, PinoAdapter } from '../adapters';
 import { LoggerDecorator } from '../decorator/LoggerDecorator';
 
 export const makeLogger = () => {

@@ -3,13 +3,13 @@ import elasticsearch, { Client } from '@elastic/elasticsearch';
 import { Env } from '../../../../config/Env';
 
 const elasticSearchEnv = Env.logger.elasticSearch;
-export interface ITransportParams {
+interface ITransportParams {
   readonly index: string;
   readonly type: string;
   readonly body: { timestamp: Date; [key: string]: unknown };
 }
 
-export default class ElasticSearchService {
+export class ElasticSearchService {
   private static client: Client;
 
   public static async getClient(): Promise<Client> {
