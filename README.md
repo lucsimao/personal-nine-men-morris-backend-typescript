@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 
-My personal typescript nodejs configuration
+This is a Nine Men Moris node js game implemented as a socket practice.
 
 ## Authors
 
@@ -36,6 +36,31 @@ $ git clone https://github.com/lucsimao/testlink-facade-api
 ```
 $ yarn install
 $ yarn start
+```
+
+### Elastic Search
+
+If elastic search does not work in docker, a max_map_count configuration may be necessary as suggested at [ElasticSearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144) official page.
+
+For windows users
+
+```sh
+wsl -d docker-desktop
+sysctl -w vm.max_map_count=262144
+```
+
+For linux users
+
+```sh
+grep vm.max_map_count /etc/sysctl.conf
+vm.max_map_count=262144
+```
+
+For MacOS or Windows without WSL
+
+```sh
+docker-machine ssh
+sudo sysctl -w vm.max_map_count=262144
 ```
 
 # Test
@@ -106,3 +131,4 @@ In this project, we used the following technologies:
 - [NodeJS Integration Test Best Practices](https://github.com/testjavascript/nodejs-integration-tests-best-practices)
 - [NodeJS Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 - [Javascript Testing Best Practices](https://github.com/goldbergyoni/javascript-testing-best-practices)
+- [Filipe Deschamps - meu-primeiro-jogo-multiplayer](https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer)
