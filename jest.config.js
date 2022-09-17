@@ -13,6 +13,7 @@ module.exports = {
     '!src/**/*.spec.ts',
     '!src/main/**/*.ts',
     '!src/index.ts',
+    '!src/config/**/*.ts',
   ],
   coverageThreshold: {
     global: {

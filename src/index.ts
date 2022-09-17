@@ -2,33 +2,33 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 
-import { Logger } from './main/adapters';
+import { Env } from './config/Env';
 import { makeGame } from './main/factories/GameController';
+import { makeLogger } from './main/factories/Logger';
 
 const app = express();
 const server = http.createServer(app);
 const socketServer = new Server(server);
 
-const PORT = 3000;
+const PORT = Env.app.port;
 app.use(express.static('public'));
-
-//localhost:3000
+const logger = makeLogger();
 void (async () => {
   try {
     await new Promise<void>(resolve =>
       server.listen(PORT, () => {
-        Logger.info({ msg: `Server listening on port ${PORT}` });
+        logger.info({ msg: `Server listening on port ${PORT}` });
         resolve();
       }),
     );
 
-    const game = makeGame(socketServer);
+    const game = makeGame(socketServer, logger);
 
     await game.start();
   } catch (error) {
-    Logger.error({
+    logger.error({
       msg: 'An error ocurred and closed the app',
-      error: error,
+      error: JSON.stringify(error),
     });
   }
 })();

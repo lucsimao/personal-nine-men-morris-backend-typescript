@@ -1,9 +1,9 @@
-import { PlayerResult } from '../../presentation/protocols/PlayerInputRepository';
+import { PlayerResult } from '../../../presentation/protocols/PlayerInputRepository';
 import {
   AddInteractionResult,
   GameState,
-} from '../../use-case/states/protocols';
-import { PlayerInputClient } from '../infra/protocols/PlayerInputClient';
+} from '../../../use-case/states/protocols';
+import { PlayerInputClient } from '../../infra/protocols/PlayerInputClient';
 import { SocketServer } from './protocols/SocketServer';
 
 export class SocketInputAdapter implements PlayerInputClient {

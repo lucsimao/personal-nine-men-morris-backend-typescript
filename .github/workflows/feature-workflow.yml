@@ -1,0 +1,29 @@
+name: Release Workflow
+env:
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+on: ['pull_request']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use nodeJS ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Static Analysis
+        run: yarn lint && yarn style:check
+
+      - name: Run all tests
+        run: yarn test
