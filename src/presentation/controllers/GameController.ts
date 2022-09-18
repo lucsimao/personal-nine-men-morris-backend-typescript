@@ -62,13 +62,13 @@ export class GameController {
       player,
       foe,
     });
+    this.logger.info({
+      msg: `starting game`,
+      state: state.name,
+      board: state.gameInfo,
+    });
     while (state) {
       try {
-        this.logger.info({
-          msg: `starting game`,
-          state: state.name,
-          board: state.gameInfo,
-        });
         const interaction = getValidInteraction(
           state,
           this.playerInputRepository,
@@ -106,6 +106,8 @@ export class GameController {
       msg: `player2 connected`,
       playerName: player2.name,
     });
+
+    await this.playerInputRepository.setWatcherPlayerConnection();
 
     const player = new Player(player1.id, player1.name, PositionStatus.BLACK);
     const foe = new Player(player2.id, player2.name, PositionStatus.WHITE);
