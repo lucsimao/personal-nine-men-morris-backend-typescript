@@ -10,6 +10,8 @@ const app = express();
 const server = http.createServer(app);
 const socketServer = new Server(server);
 
+socketServer.connectTimeout(Env.socket.timeout);
+
 const PORT = Env.app.port;
 app.use(express.static('public'));
 const logger = makeLogger();
