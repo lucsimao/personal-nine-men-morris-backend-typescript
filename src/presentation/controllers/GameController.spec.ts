@@ -1,3 +1,4 @@
+import { SocketTimeoutError } from '../../main/decorator/errors/SocketTimeoutError';
 import { Logger } from '../../main/infra/protocols/Logger';
 import { GameState } from '../../use-case/states/protocols';
 import { PlayerInputRepository } from '../protocols/PlayerInputRepository';
@@ -121,6 +122,18 @@ describe('Game Controller', () => {
 
         await expect(promise).rejects.toThrow(
           new Error('some add piece error'),
+        );
+      });
+      test('when timeout error ocurred', async () => {
+        const { sut, playerInputRepository } = makeSut();
+        playerInputRepository.getPlayerAddPiece.mockRejectedValueOnce(
+          new SocketTimeoutError('some add piece error'),
+        );
+
+        const promise = sut.start();
+
+        await expect(promise).rejects.toThrow(
+          new SocketTimeoutError('some add piece error'),
         );
       });
     });
