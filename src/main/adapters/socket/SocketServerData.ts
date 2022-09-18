@@ -5,12 +5,36 @@ import { SocketServer } from './protocols/SocketServer';
 export class SocketServerData implements SocketServer {
   constructor(private readonly server: Server) {}
 
-  public async getConnectionSocket(): Promise<Socket> {
+  public async getConnectionSocket(
+    callback?: (socketName: string) => Promise<void>,
+  ): Promise<Socket> {
     return new Promise(resolve =>
-      this.server.on('connection', (socket: Socket) => {
+      this.server.once('connection', async (socket: Socket) => {
+        await callback?.(socket.id);
         resolve(socket);
       }),
     );
+  }
+
+  public async setDisconnectionSocket(
+    socket: Socket,
+    callback: CallableFunction,
+  ): Promise<void> {
+    socket.on('disconnect', async () => {
+      await callback(socket.id);
+    });
+  }
+
+  public async clearAllListeners(): Promise<void> {
+    return new Promise(resolve => {
+      const sockets = this.server.sockets.sockets;
+
+      sockets.forEach(socket => {
+        socket.offAny();
+      });
+
+      resolve();
+    });
   }
 
   public getSocketById(id: string): Socket {
@@ -28,7 +52,7 @@ export class SocketServerData implements SocketServer {
     eventName: string,
   ): Promise<string> {
     return new Promise(resolve => {
-      socket.on(eventName, response => {
+      socket.once(eventName, response => {
         resolve(response);
       });
     });

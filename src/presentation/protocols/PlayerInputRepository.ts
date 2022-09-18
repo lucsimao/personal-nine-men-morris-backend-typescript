@@ -11,6 +11,7 @@ export interface PlayerResult {
 
 export interface PlayerInputRepository {
   getPlayer(): Promise<PlayerResult>;
+  setWatcherPlayerConnection(): Promise<void>;
   updateBoard(state: GameState): Promise<void>;
   getStartGame(state: GameState): Promise<void>;
   getPlayerTurnStart(state: GameState): Promise<void>;

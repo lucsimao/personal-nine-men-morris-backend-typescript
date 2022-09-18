@@ -18,6 +18,7 @@ const makePlayerInputRepository = (): jest.Mocked<PlayerInputRepository> => ({
   getPlayerTurnStart: jest.fn(),
   getStartGame: jest.fn(),
   updateBoard: jest.fn(),
+  setWatcherPlayerConnection: jest.fn(),
 });
 
 const makeSut = () => {
