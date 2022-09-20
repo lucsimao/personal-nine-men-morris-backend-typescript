@@ -22,7 +22,19 @@ export class ElasticSearchService {
   }
 
   public static async log(params: ITransportParams): Promise<void> {
-    const client = await this.getClient();
-    await client.index(params);
+    try {
+      const client = await this.getClient();
+      await client.index(params);
+    } catch (error) {
+      await this.log({
+        index: 'api',
+        type: '_doc',
+        body: {
+          timestamp: new Date(),
+          type: 'error',
+          msg: (error as Error).message,
+        },
+      });
+    }
   }
 }

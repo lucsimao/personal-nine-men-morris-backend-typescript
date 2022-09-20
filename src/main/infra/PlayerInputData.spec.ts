@@ -34,6 +34,8 @@ const makePlayerInputClient = (): jest.Mocked<PlayerInputClient> => ({
   getPlayer: jest.fn().mockResolvedValue('player name'),
   sendEventToAllPlayers: jest.fn().mockResolvedValue(null),
   sendEventToPlayer: jest.fn().mockResolvedValue(null),
+  setDefaultWatcherConnection: jest.fn().mockResolvedValue(null),
+  clearPlayerListeners: jest.fn().mockResolvedValue(null),
 });
 
 const makeSut = () => {
@@ -51,7 +53,7 @@ describe('Player Data', () => {
 
       await sut.getPlayer();
 
-      expect(playerInputClient.getPlayer).toBeCalledWith();
+      expect(playerInputClient.getPlayer).toBeCalledWith(expect.any(Function));
     });
 
     describe('should return player', () => {

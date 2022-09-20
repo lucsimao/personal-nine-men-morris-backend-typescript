@@ -2,6 +2,7 @@ import { Board } from '../../domain/entities/Board';
 import { Player } from '../../domain/entities/Player';
 import { PositionStatus } from '../../domain/enum/PositionStatus';
 import { InvalidInteractionError } from '../../domain/errors/InvalidInteractionError';
+import { SocketTimeoutError } from '../../main/decorator/errors/SocketTimeoutError';
 import { Logger } from '../../main/infra/protocols/Logger';
 import { StartGameState } from '../../use-case/states';
 import { State } from '../../use-case/states/enum/State';
@@ -62,13 +63,13 @@ export class GameController {
       player,
       foe,
     });
+    this.logger.info({
+      msg: `starting game`,
+      state: state.name,
+      board: state.gameInfo,
+    });
     while (state) {
       try {
-        this.logger.info({
-          msg: `starting game`,
-          state: state.name,
-          board: state.gameInfo,
-        });
         const interaction = getValidInteraction(
           state,
           this.playerInputRepository,
@@ -77,9 +78,18 @@ export class GameController {
         state = await state.exec(interaction);
         if (state) await this.playerInputRepository.updateBoard(state);
       } catch (error) {
+        if (error instanceof SocketTimeoutError) {
+          this.logger.error({
+            msg: `player ${error.socketName} timed out`,
+            error: error,
+            message: error.message,
+          });
+          throw error;
+        }
         if (!(error instanceof InvalidInteractionError)) {
           throw error;
         }
+
         this.logger.warning({
           msg: `invalid command`,
           error: error,
@@ -106,6 +116,8 @@ export class GameController {
       msg: `player2 connected`,
       playerName: player2.name,
     });
+
+    await this.playerInputRepository.setWatcherPlayerConnection();
 
     const player = new Player(player1.id, player1.name, PositionStatus.BLACK);
     const foe = new Player(player2.id, player2.name, PositionStatus.WHITE);

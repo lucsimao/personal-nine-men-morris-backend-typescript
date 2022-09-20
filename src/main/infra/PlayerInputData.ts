@@ -27,9 +27,28 @@ export class PlayerInputData implements PlayerInputRepository {
   ) {}
 
   public async getPlayer(): Promise<PlayerResult> {
-    const result = await this.playerInputClient.getPlayer();
+    const result = await this.playerInputClient.getPlayer(
+      async (playerName: string) => {
+        this.logger.info({
+          msg: `Player ${playerName} has disconnected`,
+          playerName: playerName,
+        });
+        await this.playerInputClient.clearPlayerListeners();
+      },
+    );
 
     return result;
+  }
+
+  public async setWatcherPlayerConnection() {
+    void this.playerInputClient.setDefaultWatcherConnection(
+      async (playerName: string) => {
+        this.logger.info({
+          msg: `Player ${playerName} has joined as watcher`,
+          playerName: playerName,
+        });
+      },
+    );
   }
 
   public async updateBoard(state: GameState): Promise<void> {

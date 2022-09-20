@@ -6,6 +6,7 @@ export const Env = {
       version: process.env.ELASTIC_SEARCH_VERSION || 7,
     },
   },
+  socket: { timeout: Number(process.env.SOCKET_CONNECTION_TIMEOUT) || 30000 },
   app: {
     port: process.env.APP_PORT || 3000,
   },

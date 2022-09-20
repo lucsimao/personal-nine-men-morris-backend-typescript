@@ -9,10 +9,26 @@ import { SocketServer } from './protocols/SocketServer';
 export class SocketInputAdapter implements PlayerInputClient {
   constructor(private readonly socketServer: SocketServer) {}
 
-  public async getPlayer(): Promise<PlayerResult> {
-    const { id } = await this.socketServer.getConnectionSocket();
+  public async getPlayer(
+    disconnectionCallback: (playerName: string) => Promise<void>,
+  ): Promise<PlayerResult> {
+    const playerSocket = await this.socketServer.getConnectionSocket();
+    await this.socketServer.setDisconnectionSocket(
+      playerSocket,
+      disconnectionCallback,
+    );
 
-    return { id, name: id };
+    return { id: playerSocket.id, name: playerSocket.id };
+  }
+
+  public async setDefaultWatcherConnection(
+    callback: (playerName: string) => Promise<void>,
+  ) {
+    await this.socketServer.getConnectionSocket(callback);
+  }
+
+  public async clearPlayerListeners(): Promise<void> {
+    await this.socketServer.clearAllListeners();
   }
 
   async getInput(state: GameState): Promise<AddInteractionResult> {
