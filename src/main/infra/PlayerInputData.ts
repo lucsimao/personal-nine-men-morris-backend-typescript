@@ -33,7 +33,6 @@ export class PlayerInputData implements PlayerInputRepository {
           msg: `Player ${playerName} has disconnected`,
           playerName: playerName,
         });
-        await this.playerInputClient.clearPlayerListeners();
       },
     );
 

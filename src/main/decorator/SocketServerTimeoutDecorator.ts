@@ -53,6 +53,23 @@ export class SocketServerTimeoutDecorator implements SocketServer {
     );
   }
 
+  public async listenToEventFromAllClients<T>(
+    event: string,
+    callback?: ((response: T) => void) | undefined,
+  ): Promise<void> {
+    return await this.socketServer.listenToEventFromAllClients(event, callback);
+  }
+
+  public async listenAsyncToEventFromAllClients<T>(
+    event: string,
+    callback?: ((response: T) => void) | undefined,
+  ): Promise<void> {
+    return await this.socketServer.listenAsyncToEventFromAllClients(
+      event,
+      callback,
+    );
+  }
+
   public async setDisconnectionSocket(
     socket: Socket,
     callback: (playerName: string) => Promise<void>,

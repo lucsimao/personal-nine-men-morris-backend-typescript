@@ -3,6 +3,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 
 import { Env } from './config/Env';
+import { makeChatController } from './main/factories/ChatController';
 import { makeGame } from './main/factories/GameController';
 import { makeLogger } from './main/factories/Logger';
 
@@ -24,8 +25,10 @@ void (async () => {
       }),
     );
     const game = makeGame(socketServer, logger);
+    const chat = makeChatController(socketServer, logger);
 
     const players = await game.setupPlayers();
+    await chat.start();
     await game.start(players);
   } catch (error) {
     logger.error({
