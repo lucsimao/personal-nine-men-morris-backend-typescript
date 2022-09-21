@@ -1,3 +1,5 @@
+import { Player } from '../../domain/entities/Player';
+import { PositionStatus } from '../../domain/enum/PositionStatus';
 import { SocketTimeoutError } from '../../main/decorator/errors/SocketTimeoutError';
 import { Logger } from '../../main/infra/protocols/Logger';
 import { GameState } from '../../use-case/states/protocols';
@@ -50,6 +52,12 @@ const mockMovementLinkedValues = (
     func.mockResolvedValueOnce({ position, targetPosition });
   }
 };
+
+const makePlayers = () => ({
+  player: new Player('1', 'Player1', PositionStatus.BLACK),
+  foe: new Player('2', 'Player1', PositionStatus.WHITE),
+});
+
 describe('Game Controller', () => {
   describe('when start game', () => {
     describe('should complete game', () => {
@@ -77,7 +85,7 @@ describe('Game Controller', () => {
           [14, 5],
         ]);
 
-        await sut.start();
+        await sut.start(makePlayers());
 
         expect(true);
       });
@@ -106,7 +114,7 @@ describe('Game Controller', () => {
           [14, 5],
         ]);
 
-        await sut.start();
+        await sut.start(makePlayers());
 
         expect(true);
       });
@@ -118,7 +126,7 @@ describe('Game Controller', () => {
           new Error('some add piece error'),
         );
 
-        const promise = sut.start();
+        const promise = sut.start(makePlayers());
 
         await expect(promise).rejects.toThrow(
           new Error('some add piece error'),
@@ -130,7 +138,7 @@ describe('Game Controller', () => {
           new SocketTimeoutError('some add piece error'),
         );
 
-        const promise = sut.start();
+        const promise = sut.start(makePlayers());
 
         await expect(promise).rejects.toThrow(
           new SocketTimeoutError('some add piece error'),

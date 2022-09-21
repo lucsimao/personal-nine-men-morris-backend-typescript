@@ -23,10 +23,10 @@ void (async () => {
         resolve();
       }),
     );
-
     const game = makeGame(socketServer, logger);
 
-    await game.start();
+    const players = await game.setupPlayers();
+    await game.start(players);
   } catch (error) {
     logger.error({
       msg: 'An error ocurred and closed the app',
