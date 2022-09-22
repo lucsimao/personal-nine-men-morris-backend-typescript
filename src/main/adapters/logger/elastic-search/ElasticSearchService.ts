@@ -26,15 +26,8 @@ export class ElasticSearchService {
       const client = await this.getClient();
       await client.index(params);
     } catch (error) {
-      await this.log({
-        index: 'api',
-        type: '_doc',
-        body: {
-          timestamp: new Date(),
-          type: 'error',
-          msg: (error as Error).message,
-        },
-      });
+      // eslint-disable-next-line no-console
+      console.error('cannot log to elastic search: ', params.body.msg);
     }
   }
 }

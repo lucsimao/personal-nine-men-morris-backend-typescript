@@ -54,8 +54,13 @@ export class GameController {
     private readonly logger: Logger,
   ) {}
 
-  public async start(): Promise<void> {
-    const { player, foe } = await this.setupPlayer();
+  public async start({
+    player,
+    foe,
+  }: {
+    player: Player;
+    foe: Player;
+  }): Promise<void> {
     const board = new Board();
 
     let state: GameState<void | unknown> | null = new StartGameState({
@@ -99,7 +104,7 @@ export class GameController {
     }
   }
 
-  private async setupPlayer(): Promise<{ player: Player; foe: Player }> {
+  public async setupPlayers(): Promise<{ player: Player; foe: Player }> {
     this.logger.info({
       msg: `waiting for player 1 connection`,
     });

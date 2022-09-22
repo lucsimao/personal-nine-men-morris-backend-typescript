@@ -58,10 +58,31 @@ export class SocketServerData implements SocketServer {
     });
   }
 
-  public async listenToEventFromAllClients(event: string) {
+  public async listenToEventFromAllClients<T = unknown>(
+    event: string,
+    callback?: (response: T) => void,
+  ): Promise<void> {
     return new Promise(resolve => {
-      this.server.on(event, response => {
-        resolve(response);
+      const sockets = this.server.sockets.sockets;
+
+      sockets.forEach(socket => {
+        socket.on(event, response => {
+          callback?.(JSON.parse(response));
+          resolve(response);
+        });
+      });
+    });
+  }
+
+  public async listenAsyncToEventFromAllClients<T>(
+    event: string,
+    callback: (response: T) => void,
+  ): Promise<void> {
+    const sockets = this.server.sockets.sockets;
+
+    sockets.forEach(socket => {
+      socket.on(event, response => {
+        callback?.(JSON.parse(response));
       });
     });
   }
