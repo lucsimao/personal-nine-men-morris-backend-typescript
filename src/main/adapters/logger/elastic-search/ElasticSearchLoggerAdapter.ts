@@ -1,4 +1,7 @@
-import { Logger, LoggerParams } from '../../../infra/protocols/Logger';
+import {
+  Logger,
+  LoggerParams,
+} from '../../../../use-case/services/protocols/Logger';
 import { ElasticSearchService } from './ElasticSearchService';
 
 export class ElasticSearchLoggerAdapter implements Logger {

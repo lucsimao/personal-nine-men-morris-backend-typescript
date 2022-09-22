@@ -1,5 +1,5 @@
-import { Logger } from '../../main/infra/protocols/Logger';
-import { ChatInputRepository } from '../protocols/ChatInputRepository';
+import { ChatService } from '../../domain/services/ChatService';
+import { Logger } from '../../use-case/services/protocols/Logger';
 import { ChatController } from './ChatControlller';
 
 const makeLogger = (): jest.Mocked<Logger> => ({
@@ -8,7 +8,7 @@ const makeLogger = (): jest.Mocked<Logger> => ({
   error: jest.fn(),
 });
 
-const makeChatInputRepository = (): jest.Mocked<ChatInputRepository> => ({
+const makeChatInputRepository = (): jest.Mocked<ChatService> => ({
   listenToChat: jest.fn(),
   updateChat: jest.fn(),
 });

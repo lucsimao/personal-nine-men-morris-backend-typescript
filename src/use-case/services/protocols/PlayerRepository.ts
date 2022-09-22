@@ -1,10 +1,8 @@
-import { PlayerResult } from '../../../presentation/protocols/PlayerInputRepository';
-import {
-  AddInteractionResult,
-  GameState,
-} from '../../../use-case/states/protocols';
+import { PlayerResult } from '../../../domain/services/PlayerService';
+import { GameState } from '../../../domain/state/GameState';
+import { AddInteractionResult } from '../../states/protocols/AddInteractionResult';
 
-export interface PlayerInputClient {
+export interface PlayerRepository {
   sendEventToAllPlayers<T>(state: GameState, message: T): Promise<void>;
   getPlayer(
     disconnectionCallback: (playerName: string) => Promise<void>,

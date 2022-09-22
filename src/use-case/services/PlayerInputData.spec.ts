@@ -1,6 +1,7 @@
 import { Board } from '../../domain/entities/Board';
 import { Player } from '../../domain/entities/Player';
 import { PositionStatus } from '../../domain/enum/PositionStatus';
+import { Message } from '../../main/config/Message';
 import {
   GameOverState,
   PlayerAddPieceState,
@@ -9,10 +10,9 @@ import {
   PlayerTurnStartState,
   StartGameState,
 } from '../../use-case/states';
-import { Message } from '../config/Message';
 import { PlayerInputData } from './PlayerInputData';
 import { Logger } from './protocols/Logger';
-import { PlayerInputClient } from './protocols/PlayerInputClient';
+import { PlayerRepository } from './protocols/PlayerRepository';
 
 const makeGameInfo = () => {
   const board = new Board();
@@ -29,7 +29,7 @@ const makeLogger = (): jest.Mocked<Logger> => ({
   error: jest.fn(),
 });
 
-const makePlayerInputClient = (): jest.Mocked<PlayerInputClient> => ({
+const makePlayerInputClient = (): jest.Mocked<PlayerRepository> => ({
   getInput: jest.fn().mockResolvedValue({ position: 20 }),
   getPlayer: jest.fn().mockResolvedValue('player name'),
   sendEventToAllPlayers: jest.fn().mockResolvedValue(null),
@@ -43,7 +43,7 @@ const makeSut = () => {
   const logger = makeLogger();
   const sut = new PlayerInputData(playerInputClient, logger);
 
-  return { sut, playerInputClient };
+  return { sut, playerInputClient, logger };
 };
 
 describe('Player Data', () => {
@@ -54,6 +54,18 @@ describe('Player Data', () => {
       await sut.getPlayer();
 
       expect(playerInputClient.getPlayer).toBeCalledWith(expect.any(Function));
+    });
+
+    test('should call player input callback', async () => {
+      const { sut, playerInputClient, logger } = makeSut();
+      playerInputClient.getPlayer.mockImplementationOnce(async callback => {
+        await callback('player name');
+        return { id: '1', name: 'some name' };
+      });
+
+      await sut.getPlayer();
+
+      expect(logger.info).toBeCalled();
     });
 
     describe('should return player', () => {
@@ -77,6 +89,31 @@ describe('Player Data', () => {
 
         await expect(promise).rejects.toThrow(new Error('Some client error'));
       });
+    });
+  });
+
+  describe('When watching player connection', () => {
+    test('should watch player', async () => {
+      const { sut, playerInputClient } = makeSut();
+
+      await sut.setWatcherPlayerConnection();
+
+      expect(playerInputClient.setDefaultWatcherConnection).toBeCalledWith(
+        expect.any(Function),
+      );
+    });
+
+    test('should watch player callback', async () => {
+      const { sut, playerInputClient, logger } = makeSut();
+      playerInputClient.setDefaultWatcherConnection.mockImplementationOnce(
+        async callback => {
+          await callback('player name');
+        },
+      );
+
+      await sut.setWatcherPlayerConnection();
+
+      expect(logger.info).toBeCalled();
     });
   });
 

@@ -1,4 +1,4 @@
-export interface ChatInputClient {
+export interface ChatRepository {
   listenToChat<T>(
     event: string,
     callback: (response: T) => Promise<void>,

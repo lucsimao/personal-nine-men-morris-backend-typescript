@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-import { SocketServer } from './protocols/SocketServer';
+import { SocketServer } from '../../infra/protocols/SocketServer';
 
 export class SocketServerData implements SocketServer {
   constructor(private readonly server: Server) {}

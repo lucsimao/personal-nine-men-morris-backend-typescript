@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { SocketServer } from '../adapters/socket/protocols/SocketServer';
+import { SocketServer } from '../infra/protocols/SocketServer';
 import { SocketTimeoutError } from './errors/SocketTimeoutError';
 import { makeTimeoutPromise } from './util/TimeoutFunction';
 

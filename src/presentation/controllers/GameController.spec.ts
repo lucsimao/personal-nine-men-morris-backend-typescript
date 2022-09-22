@@ -1,9 +1,9 @@
 import { Player } from '../../domain/entities/Player';
 import { PositionStatus } from '../../domain/enum/PositionStatus';
+import { PlayerService } from '../../domain/services/PlayerService';
+import { GameState } from '../../domain/state/GameState';
 import { SocketTimeoutError } from '../../main/decorator/errors/SocketTimeoutError';
-import { Logger } from '../../main/infra/protocols/Logger';
-import { GameState } from '../../use-case/states/protocols';
-import { PlayerInputRepository } from '../protocols/PlayerInputRepository';
+import { Logger } from '../../use-case/services/protocols/Logger';
 import { GameController } from './GameController';
 
 const makeLogger = (): jest.Mocked<Logger> => ({
@@ -12,7 +12,7 @@ const makeLogger = (): jest.Mocked<Logger> => ({
   error: jest.fn(),
 });
 
-const makePlayerInputRepository = (): jest.Mocked<PlayerInputRepository> => ({
+const makePlayerInputRepository = (): jest.Mocked<PlayerService> => ({
   getGameOver: jest.fn(),
   getPlayer: jest.fn().mockResolvedValue({ id: '1', name: 'Some player' }),
   getPlayerAddPiece: jest.fn().mockResolvedValue(null),

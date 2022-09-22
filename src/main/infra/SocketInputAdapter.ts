@@ -1,12 +1,10 @@
-import { PlayerResult } from '../../../presentation/protocols/PlayerInputRepository';
-import {
-  AddInteractionResult,
-  GameState,
-} from '../../../use-case/states/protocols';
-import { PlayerInputClient } from '../../infra/protocols/PlayerInputClient';
+import { PlayerResult } from '../../domain/services/PlayerService';
+import { GameState } from '../../domain/state/GameState';
+import { PlayerRepository } from '../../use-case/services/protocols/PlayerRepository';
+import { AddInteractionResult } from '../../use-case/states/protocols/AddInteractionResult';
 import { SocketServer } from './protocols/SocketServer';
 
-export class SocketInputAdapter implements PlayerInputClient {
+export class SocketInputAdapter implements PlayerRepository {
   constructor(private readonly socketServer: SocketServer) {}
 
   public async getPlayer(

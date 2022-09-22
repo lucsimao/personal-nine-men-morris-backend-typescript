@@ -1,15 +1,13 @@
 import {
-  PlayerInputRepository,
   PlayerResult,
-} from '../../presentation/protocols/PlayerInputRepository';
-import {
-  GameState,
-  AddInteractionResult,
-  MovementInteractionResult,
-} from '../../use-case/states/protocols';
-import { Message } from '../config/Message';
+  PlayerService,
+} from '../../domain/services/PlayerService';
+import { GameState } from '../../domain/state/GameState';
+import { Message } from '../../main/config/Message';
+import { AddInteractionResult } from '../states/protocols/AddInteractionResult';
+import { MovementInteractionResult } from '../states/protocols/MovementInteractionResult';
 import { Logger } from './protocols/Logger';
-import { PlayerInputClient } from './protocols/PlayerInputClient';
+import { PlayerRepository } from './protocols/PlayerRepository';
 
 const {
   START_GAME,
@@ -20,9 +18,9 @@ const {
   GAME_OVER,
 } = Message;
 
-export class PlayerInputData implements PlayerInputRepository {
+export class PlayerInputData implements PlayerService {
   constructor(
-    private readonly playerInputClient: PlayerInputClient,
+    private readonly playerInputClient: PlayerRepository,
     private readonly logger: Logger,
   ) {}
 

@@ -1,4 +1,4 @@
-import { Logger, LoggerParams } from '../infra/protocols/Logger';
+import { Logger, LoggerParams } from '../../use-case/services/protocols/Logger';
 
 export class LoggerDecorator implements Logger {
   constructor(private readonly loggers: Logger[]) {}

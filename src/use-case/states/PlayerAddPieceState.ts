@@ -1,6 +1,8 @@
-import { State } from './enum/State';
+import { State } from '../../domain/state/enum/State';
+import { GameInfo } from '../../domain/state/GameInfo';
+import { GameState } from '../../domain/state/GameState';
 import { PlayerRemoveFoePieceState, PlayerTurnStartState } from './index';
-import { AddInteractionResult, GameInfo, GameState } from './protocols';
+import { AddInteractionResult } from './protocols/AddInteractionResult';
 
 export class PlayerAddPieceState extends GameState<AddInteractionResult> {
   constructor(gameInfoInfo: GameInfo) {

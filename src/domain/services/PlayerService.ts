@@ -1,15 +1,13 @@
-import {
-  AddInteractionResult,
-  GameState,
-  MovementInteractionResult,
-} from '../../use-case/states/protocols';
+import { AddInteractionResult } from '../../use-case/states/protocols/AddInteractionResult';
+import { MovementInteractionResult } from '../../use-case/states/protocols/MovementInteractionResult';
+import { GameState } from '../state/GameState';
 
 export interface PlayerResult {
   id: string;
   name: string;
 }
 
-export interface PlayerInputRepository {
+export interface PlayerService {
   getPlayer(): Promise<PlayerResult>;
   setWatcherPlayerConnection(): Promise<void>;
   updateBoard(state: GameState): Promise<void>;
