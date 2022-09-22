@@ -2,16 +2,16 @@ import { Board } from '../../domain/entities/Board';
 import { Player } from '../../domain/entities/Player';
 import { PositionStatus } from '../../domain/enum/PositionStatus';
 import { InvalidInteractionError } from '../../domain/errors/InvalidInteractionError';
+import { PlayerService } from '../../domain/services/PlayerService';
+import { State } from '../../domain/state/enum/State';
+import { GameState } from '../../domain/state/GameState';
 import { SocketTimeoutError } from '../../main/decorator/errors/SocketTimeoutError';
-import { Logger } from '../../main/infra/protocols/Logger';
+import { Logger } from '../../use-case/services/protocols/Logger';
 import { StartGameState } from '../../use-case/states';
-import { State } from '../../use-case/states/enum/State';
-import { GameState } from '../../use-case/states/protocols';
-import { PlayerInputRepository } from '../protocols/PlayerInputRepository';
 
 const getValidInteraction = (
   state: GameState,
-  playerInputRepository: PlayerInputRepository,
+  playerInputRepository: PlayerService,
 ): ((state?: GameState) => unknown) => {
   const validInteractions = {
     [State.START_GAME]: async () => {
@@ -50,7 +50,7 @@ const getValidInteraction = (
 
 export class GameController {
   constructor(
-    private readonly playerInputRepository: PlayerInputRepository,
+    private readonly playerInputRepository: PlayerService,
     private readonly logger: Logger,
   ) {}
 

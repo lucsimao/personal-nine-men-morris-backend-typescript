@@ -1,6 +1,7 @@
-import { State } from './enum/State';
+import { State } from '../../domain/state/enum/State';
+import { GameInfo } from '../../domain/state/GameInfo';
+import { GameState } from '../../domain/state/GameState';
 import { PlayerMovePieceState, PlayerAddPieceState } from './index';
-import { GameInfo, GameState } from './protocols';
 
 export class PlayerTurnStartState extends GameState<void> {
   constructor(gameInfoInfo: GameInfo) {

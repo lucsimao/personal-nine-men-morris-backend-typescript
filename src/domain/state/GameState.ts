@@ -1,4 +1,4 @@
-import { State } from '../enum/State';
+import { State } from './enum/State';
 import { GameInfo } from './GameInfo';
 
 export abstract class GameState<T = unknown> {

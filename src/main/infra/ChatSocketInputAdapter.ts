@@ -1,7 +1,7 @@
-import { ChatInputClient } from '../../infra/protocols/ChatInputClient';
+import { ChatRepository } from '../../use-case/services/protocols/ChatRepository';
 import { SocketServer } from './protocols/SocketServer';
 
-export class ChatSocketInputAdapter implements ChatInputClient {
+export class ChatSocketInputAdapter implements ChatRepository {
   constructor(private readonly socketServer: SocketServer) {}
 
   public async listenToChat<T>(

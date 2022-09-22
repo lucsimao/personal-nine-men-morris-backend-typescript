@@ -1,2 +1,2 @@
-export * from './SocketInputAdapter';
+export * from '../../infra/SocketInputAdapter';
 export * from './SocketServerData';

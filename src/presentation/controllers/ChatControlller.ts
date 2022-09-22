@@ -1,12 +1,12 @@
 import { Chat, ChatMessage } from '../../domain/entities/Chat';
-import { Logger } from '../../main/infra/protocols/Logger';
-import { ChatInputRepository } from '../protocols/ChatInputRepository';
+import { ChatService } from '../../domain/services/ChatService';
+import { Logger } from '../../use-case/services/protocols/Logger';
 
 export class ChatController {
   private chat: Chat;
 
   constructor(
-    private readonly chatInputRepository: ChatInputRepository,
+    private readonly chatInputRepository: ChatService,
     private readonly logger: Logger,
   ) {
     this.chat = new Chat();
