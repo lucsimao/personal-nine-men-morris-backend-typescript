@@ -1,0 +1,37 @@
+#screen {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  width: 80vw;
+  height: 80vw;
+  border-style: solid;
+  /* box-shadow: 5px 5px darkgray; */
+  /* background-image: url("./assets/background.png"); */
+}
+
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+  #screen {
+    width: 80vh;
+    height: 80vh;
+  }
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* border: 5px solid #ffff00; */
+  /* padding: 10px; */
+}
+/* 
+canvas {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  position: absolute;
+  background-image: url("./assets/background.png");
+} */

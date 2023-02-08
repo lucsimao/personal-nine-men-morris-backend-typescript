@@ -49,10 +49,13 @@ const getValidInteraction = (
 };
 
 export class GameController {
+  private isRunning: boolean;
   constructor(
     private readonly playerInputRepository: PlayerService,
     private readonly logger: Logger,
-  ) {}
+  ) {
+    this.isRunning = true;
+  }
 
   public async start({
     player,
@@ -61,6 +64,7 @@ export class GameController {
     player: Player;
     foe: Player;
   }): Promise<void> {
+    this.isRunning = true;
     const board = new Board();
 
     let state: GameState<void | unknown> | null = new StartGameState({
@@ -73,7 +77,7 @@ export class GameController {
       state: state.name,
       board: state.gameInfo,
     });
-    while (state) {
+    while (state && this.isRunning) {
       try {
         const interaction = getValidInteraction(
           state,
@@ -128,5 +132,9 @@ export class GameController {
     const foe = new Player(player2.id, player2.name, PositionStatus.WHITE);
 
     return { player, foe };
+  }
+
+  public stop() {
+    this.isRunning = false;
   }
 }
